@@ -1,4 +1,7 @@
 # My configurations:
 *.exe
+<<<<<<< HEAD
 *.txt
+=======
+>>>>>>> 5b5bfa6... add .gitignore
 settings.json
