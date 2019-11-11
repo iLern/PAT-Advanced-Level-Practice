@@ -1,11 +1,12 @@
 #include <cstdio>
 #include <vector>
 #include <cstring>
+#include <set>
 #include <algorithm>
 
-const int MAXN = 10000 + 10;
+const int MAXN = 10000 + 5;
 
-bool g[MAXN][MAXN];
+std::vector<int> g[MAXN];
 bool vis[MAXN];
 int depth[MAXN];
 
@@ -13,10 +14,9 @@ void dfs(int n, int x, int cnt, int &maxDepth) {
     depth[x] = cnt;
     vis[x] = true;
     maxDepth = std::max(cnt, maxDepth);
-    for (int i = 1; i <= n; i++) {
-        if (g[x][i] && !vis[i]) {
-            dfs(n, i, cnt + 1, maxDepth);
-        }
+
+    for (auto ch : g[x]) {
+        if (!vis[ch]) dfs(n, ch, cnt + 1, maxDepth);
     }
 }
 
@@ -27,7 +27,8 @@ int main() {
     for (int i = 0; i < n - 1; i++) {
         int u, v;
         scanf("%d%d", &u, &v);
-        g[u][v] = g[v][u] = true;
+        g[u].push_back(v);
+        g[v].push_back(u);
     }
 
     int cnt = 0;
@@ -42,30 +43,24 @@ int main() {
     if (cnt > 1) {
         printf("Error: %d components", cnt);
     } else {
-        std::vector<int> vec;
+        std::set<int> ans;
         for (int i = 1; i <= n; i++) {
             if (depth[i] == maxDepth) {
-                vec.push_back(i);
+                ans.insert(i);
             }
         }
 
-        std::vector<int> ans;
-        for (auto x : vec) {
-            memset(vis, false, sizeof(vis));
-            memset(depth, 0, sizeof(depth));
+        int x = *ans.begin();
+        memset(vis, false, sizeof(vis));
+        memset(depth, 0, sizeof(depth));
 
-            dfs(n, x, 0, maxDepth);
+        dfs(n, x, 0, maxDepth);
 
-            for (int i = 1; i <= n; i++) {
-                if (depth[i] == maxDepth) {
-                    ans.push_back(i);
-                }
+        for (int i = 1; i <= n; i++) {
+            if (depth[i] == maxDepth) {
+                ans.insert(i);
             }
         }
-
-        for (auto &x : vec) ans.push_back(x);
-
-        std::sort(ans.begin(), ans.end());
 
         for (auto &x : ans) {
             printf("%d\n", x);
