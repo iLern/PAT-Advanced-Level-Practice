@@ -1,14 +1,12 @@
 #include <cstdio>
-#include <vector>
+#include <list>
+#include <set>
 #include <algorithm>
 
 const int MAXN = 100000 + 10;
 
 struct Node {
     int address, data, next;
-    bool flag;
-
-    Node() : address(0), data(0), next(-1), flag(false) {}
 } nodes[MAXN];
 
 int main() {
@@ -16,47 +14,62 @@ int main() {
     scanf("%d%d%d", &head, &n, &k);
 
     for (int i = 0; i < n; i++) {
-        int address, data, next;
-        scanf("%d%d%d", &address, &data, &next);
-
+        int address;
+        scanf("%d", &address);
         nodes[address].address = address;
-        nodes[address].data = data;
-        nodes[address].next = next;
+        scanf("%d%d", &nodes[address].data, &nodes[address].next);
     }
 
-    std::vector<Node> vec;
-
-    int cnt = 0;
+    std::list<Node> l;
     for (int v = head; v != -1; v = nodes[v].next) {
-        cnt++;
-        nodes[v].flag = true;
-
-        if (cnt <= k) vec.push_back(nodes[v]);
+        l.insert(l.end(), nodes[v]);
     }
 
-    std::reverse(vec.begin(), vec.end());
-
-    // printf("-----------\n");
-    // for (auto x : vec) {
-    //     printf("%05d %d %05d\n", x.address, x.data, x.next);
+    // printf("------\n");
+    // for (auto it = l.begin(); it != l.end(); it++) {
+    //     if (it->next == -1) printf("%05d %d -1\n", it->address, it->data);
+    //     else printf("%05d %d %05d\n", it->address, it->data, it->next);
     // }
 
-    int tmp = vec[0].next;
-    for (int i = 0; i < vec.size(); i++) {
-        if (i < vec.size() - 1) vec[i].next = vec[i + 1].address;
-        else vec[i].next = tmp;
+    int cnt = 0;
+    auto st = l.begin();
+    for (auto it = l.begin(); it != l.end(); it++) {
+        if (cnt == k) {
+            std::reverse(st, it);
+            cnt = 0;
+            st = it;
+        }
+        cnt++;
     }
 
-    // printf("-----------\n");
-    for (auto x : vec) {
-        if (x.next != -1) printf("%05d %d %05d\n", x.address, x.data, x.next);
-        else printf("%05d %d -1\n", x.address, x.data);
+    // printf("---\n");
+    // printf("*%d*%d*\n", st->data, cnt);
+    if (cnt == k) {
+        std::reverse(st, l.end());
     }
+    // for (auto v : l) {
+    //     printf("%d\n", v.data);
+    // }
 
-    for (int v = tmp; v != -1; v = nodes[v].next) {
-        printf("%05d %d ", nodes[v].address, nodes[v].data);
-        if (nodes[v].next != -1) printf("%05d\n", nodes[v].next);
-        else printf("-1\n");
+    // printf("------\n");
+    for (auto it = l.begin(); it != l.end(); it++) {
+        auto tmp = it;
+        tmp++;
+
+        if (tmp != l.end()) it->next = tmp->address;
+        else it->next = -1;
+
+        if (it->next == -1) printf("%05d %d -1\n", it->address, it->data);
+        else printf("%05d %d %05d\n", it->address, it->data, it->next);
     }
     return 0;
 }
+
+
+// 00100 6 3
+// 00000 4 99999
+// 00100 1 12309
+// 68237 6 -1
+// 33218 3 00000
+// 99999 5 68237
+// 12309 2 33218
