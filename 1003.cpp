@@ -8,7 +8,7 @@
 #include <vector>
 #include <climits>
 
-const int MAXN = 500 + 10;
+const int MAXN = 5000 + 10;
 
 struct Node;
 struct Edge;
@@ -18,9 +18,8 @@ struct Node {
     std::vector<Edge> edges;
 
     int dis, maxVal, cnt;
-    bool vis;
 
-    Node() : val(0), dis(INT_MAX), maxVal(0), cnt(0), vis(false) {
+    Node() : val(0), dis(INT_MAX), maxVal(0), cnt(0) {
         edges.clear();
     }
 } nodes[MAXN];
@@ -50,25 +49,19 @@ void dijkstra(Node *x) {
         info v = pq.top();
         pq.pop();
 
-        // if (v.first != v.second->dis) continue;
-        // if (v.second->vis) continue;
-        v.second->vis = true;
+        if (v.first != v.second->dis) continue;
 
         for (auto &e : v.second->edges) {
-            if (e.to->vis) continue;
-
-            if (e.to->dis == v.second->dis + e.w) {
+            if (e.to->dis > v.second->dis + e.w) {
+                e.to->dis = v.second->dis + e.w;
+                e.to->cnt = v.second->cnt;
+                e.to->maxVal = e.to->val + v.second->maxVal;
+                pq.push(std::make_pair(e.to->dis, e.to));
+            } else if (e.to->dis == v.second->dis + e.w) {
                 e.to->cnt += v.second->cnt;
                 if (e.to->maxVal < e.to->val + v.second->maxVal) {
                     e.to->maxVal = e.to->val + v.second->maxVal;
-                    pq.push(std::make_pair(e.to->dis, e.to));
                 }
-            } else if (e.to->dis > v.second->dis + e.w) {
-                e.to->dis = v.second->dis + e.w;
-                e.to->cnt = v.second->cnt;
-                e.to->maxVal = v.second->maxVal + e.to->val;
-
-                pq.push(std::make_pair(e.to->dis, e.to));
             }
         }
     }
@@ -79,7 +72,7 @@ int main() {
     scanf("%d%d%d%d", &n, &m, &c1, &c2);
 
     for (int i = 0; i < n; i++) {
-        scanf("%d", &nodes[i].val); //weight[i]
+        scanf("%d", &nodes[i].val);
     }
 
     for (int i = 0; i < m; i++) {
@@ -91,7 +84,6 @@ int main() {
 
     dijkstra(&nodes[c1]);
 
-    // printf("%d\n", nodes[c2].dis);
-    printf("%d %d\n", nodes[c2].cnt, nodes[c2].maxVal);   //num[c2], w[c2]
+    printf("%d %d\n", nodes[c2].cnt, nodes[c2].maxVal);
     return 0;
 }
