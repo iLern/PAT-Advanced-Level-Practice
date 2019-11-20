@@ -1,5 +1,3 @@
-//can't pass; same as 1003
-
 #include <algorithm>
 #include <utility>
 #include <queue>
@@ -7,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <functional>
 #include <map>
 
 using namespace std;
@@ -45,7 +44,7 @@ void add_edge(int u, int v, int w) {
 
 using info = pair<int, Node*>;
 void dijkstra(Node *x) {
-    priority_queue<info> pq;
+    priority_queue<info, std::vector<info>, std::greater<info>> pq;
     
     x->dis = 0;
     x->cnt = 1;

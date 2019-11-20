@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <climits>
+#include <functional>
 #include <algorithm>
 
 const int MAXN = 500 + 10;
@@ -40,7 +41,7 @@ using info = std::pair<int, Node*>;
 
 //type: 0->dis, 1->time
 void dijkstra(Node *x, int type) {
-    std::priority_queue<info> pq;
+    std::priority_queue<info, std::vector<info>, std::greater<info>> pq;
 
     x->dis[0] = x->dis[1] = 0;
     pq.push(std::make_pair(0, x));
@@ -50,6 +51,7 @@ void dijkstra(Node *x, int type) {
         pq.pop();
 
         if (v.first != v.second->dis[type]) continue;
+        
         for (auto &e : v.second->edges) {
             if (e.to->dis[type] > e.w[type] + v.second->dis[type]) {
                 e.to->dis[type] = e.w[type] + v.second->dis[type];

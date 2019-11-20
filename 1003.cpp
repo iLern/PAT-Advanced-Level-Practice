@@ -1,5 +1,3 @@
-//can't pass
-
 #include <cstdio>
 #include <algorithm>
 #include <queue>
@@ -19,7 +17,7 @@ struct Node {
 
     int dis, maxVal, cnt;
 
-    Node() : val(0), dis(INT_MAX), maxVal(0), cnt(0) {
+    Node() : val(0), dis(INT_MAX), maxVal(-1), cnt(0) {
         edges.clear();
     }
 } nodes[MAXN];
@@ -38,11 +36,12 @@ void addEdge(int u, int v, int w) {
 
 using info = std::pair<int, Node*>;
 void dijkstra(Node *x) {
-    std::priority_queue<info> pq;
+    std::priority_queue<info, std::vector<info>, std::greater<info>> pq;
 
     x->dis = 0;
     x->cnt = 1;
     x->maxVal = x->val;
+
     pq.push(std::make_pair(0, x));
 
     while (!pq.empty()) {

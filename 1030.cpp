@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <climits>
 #include <queue>
+#include <functional>
 #include <utility>
 
 const int MAXN = 500 + 10;
@@ -35,7 +36,7 @@ void add_edge(int u, int v, int w, int c) {
 
 using info = std::pair<int, Node*>;
 void dijkstra(Node *x) {
-    std::priority_queue<info> pq;
+    std::priority_queue<info, std::vector<info>, std::greater<info>> pq;
 
     x->dis = x->cost = 0;
     pq.push(std::make_pair(0, x));
