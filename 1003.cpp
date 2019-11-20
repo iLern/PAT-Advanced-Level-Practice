@@ -8,7 +8,7 @@
 #include <vector>
 #include <climits>
 
-const int MAXN = 5000 + 10;
+const int MAXN = 500 + 10;
 
 struct Node;
 struct Edge;
